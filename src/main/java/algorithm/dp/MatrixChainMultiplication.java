@@ -12,7 +12,8 @@ public class MatrixChainMultiplication {
 
     public static void main(String[] args){
         int[][] matrices = {{40, 20}, {20, 30}, {30, 10}, {10, 30}, {30, 50}};
-        System.out.println("cost of matrix chain is "+matrixChain(matrices,0,matrices.length-1));
+        System.out.println("1.cost of matrix chain is "+matrixChain(matrices,0,matrices.length-1));
+        System.out.println("2.cost of matrix chain is "+matrixChain(matrices));
     }
 
     private static int matrixChain(int[][] matrices, int i, int j ){
@@ -42,6 +43,26 @@ public class MatrixChainMultiplication {
     }
 
     private static int matrixChain(int[][] matrices){
-        return 0;
+        int[][] dp = new int[matrices.length][matrices.length];
+        int n = matrices.length;
+
+        for (int d=1; d<n;d++){
+            for(int i=0;i<(n-d);i++){
+                int j = i+d;
+                if(j<n){
+                    int min_cost = Integer.MAX_VALUE;
+                    for(int k=i;k<j;k++){
+                        int lefct_cost = dp[i][k];
+                        int right_cost = dp[k+1][j];
+                        int produ_cost = matrices[i][0] * matrices[k][1]* matrices[j][1];
+                        min_cost = Math.min(min_cost, (lefct_cost+right_cost+produ_cost));
+                    }
+                    dp[i][j] = min_cost;
+                }
+            }
+        }
+
+
+        return dp[0][matrices.length-1];
     }
 }

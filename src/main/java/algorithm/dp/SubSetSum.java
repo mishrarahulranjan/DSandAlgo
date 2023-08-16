@@ -32,7 +32,7 @@ public class SubSetSum {
 
     }
 
-    private static int subSetSumTabular(int[] arr, int k) {
+    public static int subSetSumTabular(int[] arr, int k) {
 
          if(Arrays.stream(arr).sum() <k || arr.length==0){
              return 0;
