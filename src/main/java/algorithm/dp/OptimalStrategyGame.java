@@ -1,5 +1,10 @@
 package algorithm.dp;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * You are given an integer array nums. Two players are playing a game with this array: player 1
  * and player 2.
@@ -27,7 +32,58 @@ package algorithm.dp;
  * Hence, player 1 will never be the winner and you need to return false.
  */
 public class OptimalStrategyGame {
-    public static void main(String[] args){
 
+    public static void main(String[] args){
+        List<Integer> arr = new ArrayList<>();
+        arr.add(8);
+        arr.add(15);
+        arr.add(3);
+        arr.add(7);
+        System.out.println("1.optimalStrategy by first user is "+optimalStrategyOfGameMemoization(arr,0,arr.size()-1,new HashMap<>()));
+
+        arr.clear();
+        arr.add(2);
+        arr.add(2);
+        arr.add(2);
+        arr.add(2);
+        System.out.println("2.optimalStrategy by first user is "+optimalStrategyOfGameMemoization(arr,0,arr.size()-1,new HashMap<>()));
+
+        arr.clear();
+        arr.add(20);
+        arr.add(30);
+        arr.add(2);
+        arr.add(2);
+        arr.add(2);
+        arr.add(10);
+        System.out.println("3.optimalStrategy by first user is "+
+                                                                optimalStrategyOfGameMemoization(arr,0,arr.size()-1,new HashMap<>()));
+
+        System.out.println("4.optimalStrategy by first user is "+
+                                                                optimalStrategyOfGameTabulation(arr));
+    }
+
+    static int optimalStrategyOfGameMemoization(List<Integer> arr , int i, int j, Map<String,Integer> lookUP){
+        String key = i+"_key_"+j;
+
+        if ((i > j) || (i >= arr.size()) || (j < 0))
+            return 0;
+
+
+        if(!lookUP.containsKey(key)){
+
+            int option1 = arr.get(i) + Math.min(optimalStrategyOfGameMemoization(arr,i + 2, j,lookUP),
+                                                optimalStrategyOfGameMemoization(arr,i + 1, j - 1,lookUP));
+
+            int option2 = arr.get(j) + Math.min(optimalStrategyOfGameMemoization(arr,i + 1, j - 1,lookUP),
+                                                optimalStrategyOfGameMemoization(arr,i, j - 2,lookUP));
+            lookUP.put(key, Math.max(option1, option2));
+        }
+
+        return lookUP.get(key);
+    }
+
+    static int optimalStrategyOfGameTabulation(List<Integer> arr){
+
+        return 0;
     }
 }

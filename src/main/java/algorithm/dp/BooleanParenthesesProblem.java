@@ -30,148 +30,52 @@ public class BooleanParenthesesProblem {
         String symbols = "TTFT";
         String operators = "|&^";
 
-        StringBuilder S = new StringBuilder();
-        int j = 0;
-
-        for (int i = 0; i < symbols.length(); i++)
-        {
-            S.append(symbols.charAt(i));
-            if (j < operators.length())
-                S.append(operators.charAt(j++));
-        }
-
-        // We obtain the string  T|T&F^T
-        int N = S.length();
-
-        // There are 4 ways
-        // ((T|T)&(F^T)), (T|(T&(F^T))), (((T|T)&F)^T) and
-        // (T|((T&F)^T))
-        System.out.println("number of ways is "+countWays(N, S.toString()));
+        int ans = waysToParenthesize(symbols, operators);
+        System.out.println("ans==> "+ans);
     }
 
-    private static boolean countWays(int N, String str) {
-        int dp[][][] = new int[N + 1][N + 1][2];
+    static int waysToParenthesize(String symbolSequence, String operatorSequence)
+    {
+        int n = symbolSequence.length();
+        int T[][] = new int[n][n];
+        int F[][] = new int[n][n];
 
-        for (int row[][] : dp)
-            for (int col[] : row)
-                Arrays.fill(col, -1);
-        return parenthesis_count(str, 0, N - 1, true, dp);
-    }
+        for(int g=0;g<n;g++){
+            for(int i=0, j=g;j<n;i++,j++){
+                if(g==0){
+                    char ch = symbolSequence.charAt(i);
+                    if(ch== 'T'){
+                        T[i][j] =1;
+                        F[i][j] = 0;
+                    }else{
+                        T[i][j] = 0;
+                        F[i][j] = 1;
+                    }
+                }else{
+                    for(int k=i;k<j;k++){
+                        char opStr = operatorSequence.charAt(k);
 
-    private static boolean parenthesis_count(String str, int i, int j, boolean isTrue, int[][][] dp) {
+                        int lt = T[i][k];
+                        int rt = T[k+1][j];
+                        int lf = F[i][k];
+                        int rf = F[k+1][j];
+                        if(opStr == '&'){
+                            T[i][j] += lt*rt;
+                            F[i][j] += lf*rt+lt*rf+lf*rf;
+                        }else if(opStr == '|'){
+                            T[i][j] += lt*rt+lf*rt+lt*rf;
+                            F[i][j] += lf*rf;
+                        }else if (opStr == '^'){
+                            T[i][j] += lt*rf + lf*rt;
+                            F[i][j] += lf*rf + lt*rt;
+                        }
+                    }
 
-        if (i > j)
-            return false;
-
-        if (i == j)
-        {
-            if (isTrue)
-            {
-                return (str.charAt(i) == 'T') ? true : false;
-            }
-            else
-            {
-                return (str.charAt(i) == 'F') ? true : false;
+                }
             }
         }
 
-        if (dp[i][j][isTrue] != -1)
-            return dp[i][j][isTrue];
 
-        int temp_ans = 0;
-
-        int leftTrue, rightTrue, leftFalse, rightFalse;
-
-        for (int k = i + 1; k <= j - 1; k = k + 2)
-        {
-
-            if (dp[i][k - 1][1] != -1)
-                leftTrue = dp[i][k - 1][1];
-            else
-            {
-                // Count number of True in left Partition
-                leftTrue = parenthesis_count(str, i, k - 1,
-                        1, dp);
-            }
-            if (dp[i][k - 1][0] != -1)
-                leftFalse = dp[i][k - 1][0];
-            else
-            {
-
-                // Count number of False in left Partition
-                leftFalse = parenthesis_count(str, i, k - 1,
-                        0, dp);
-            }
-            if (dp[k + 1][j][1] != -1)
-                rightTrue = dp[k + 1][j][1];
-            else
-            {
-
-                // Count number of True in right Partition
-                rightTrue = parenthesis_count(str, k + 1, j,
-                        1, dp);
-            }
-            if (dp[k + 1][j][0] != -1)
-                rightFalse = dp[k + 1][j][0];
-            else
-            {
-
-                // Count number of False in right Partition
-                rightFalse = parenthesis_count(str, k + 1,
-                        j, 0, dp);
-            }
-
-            // Evaluate AND operation
-            if (str.charAt(k) == '&')
-            {
-                if (isTrue == 1)
-                {
-                    temp_ans
-                            = temp_ans + leftTrue * rightTrue;
-                }
-                else
-                {
-                    temp_ans = temp_ans
-                            + leftTrue * rightFalse
-                            + leftFalse * rightTrue
-                            + leftFalse * rightFalse;
-                }
-            }
-            // Evaluate OR operation
-            else if (str.charAt(k) == '|')
-            {
-                if (isTrue == 1)
-                {
-                    temp_ans = temp_ans
-                            + leftTrue * rightTrue
-                            + leftTrue * rightFalse
-                            + leftFalse * rightTrue;
-                }
-                else
-                {
-                    temp_ans
-                            = temp_ans + leftFalse * rightFalse;
-                }
-            }
-
-            // Evaluate XOR operation
-            else if (str.charAt(k) == '^')
-            {
-                if (isTrue == 1)
-                {
-                    temp_ans = temp_ans
-                            + leftTrue * rightFalse
-                            + leftFalse * rightTrue;
-                }
-                else
-                {
-                    temp_ans = temp_ans
-                            + leftTrue * rightTrue
-                            + leftFalse * rightFalse;
-                }
-            }
-            dp[i][j][isTrue] = temp_ans;
-        }
-        return temp_ans;
+        return T[0][n-1];
     }
 }

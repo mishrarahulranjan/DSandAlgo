@@ -16,6 +16,34 @@ package algorithm.dp;
 
 public class DiceThrowProblem {
     public static void main(String[] args){
+        /*
+        int noOfDice (n)    = 1;
+        int faces (m)      = 6;
+        int targetSum (x)  = 3;
+        */
+        System.out.println("1.number of ways to get target sum is "+solveDiceProblem(1,6,3));
+        System.out.println("2.number of ways to get target sum is "+solveDiceProblem(4, 2, 1));
+        System.out.println("3.number of ways to get target sum is "+solveDiceProblem(2, 2, 3));
+        System.out.println("4.number of ways to get target sum is "+solveDiceProblem(6, 3, 8));
+        System.out.println("5.number of ways to get target sum is "+solveDiceProblem(4, 2, 5));
+        System.out.println("6.number of ways to get target sum is "+solveDiceProblem(4, 3, 5));
+    }
 
+    private static int solveDiceProblem(int n, int m, int x) {
+
+        int [][] table = new int[n+1][x+1];
+
+        for(int j = 1; j <= m && j <= x; j++){
+            table[1][j] = 1;
+        }
+
+        for(int i = 2; i <= n;i ++){
+            for(int j = 1; j <= x; j++){
+                for(int k = 1; k < j && k <= m; k++)
+                    table[i][j] += table[i-1][j-k];
+            }
+        }
+
+       return table[n][x];
     }
 }
