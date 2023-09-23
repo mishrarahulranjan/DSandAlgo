@@ -23,4 +23,4 @@ This repo contains the Data structure and Algorithm problems and solution  using
 
 For any Query, plz send mail to mishra.rahul.ranjan@gmail.com
 
-**we do not provide any warranties or take responsibility for any damages resulting from the use of this code.**
+**we do not provide any warranty or take responsibility for any damages resulting from the use of this code.**
